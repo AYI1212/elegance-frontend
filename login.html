@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - ÉLÉGANCE</title>
+    <style>
+        /* Vos styles CSS existants pour login.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        body {
+            background-color: #f8f5f2;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .form-hero {
+            height: 100vh;
+            background: url('photos/cbg1.png') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+            position: relative;
+        }
+        
+        .form-hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.637);
+        }
+        
+        .form-container {
+            background: rgba(254, 254, 254, 0);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+        }
+        
+        .form-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #d4a373;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #ffffff;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4a373;
+            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.3);
+        }
+        
+        .form-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #d4a373;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .form-btn:hover {
+            background-color: #c0916a;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            color: #ffffff;
+        }
+        
+        .signup-link a {
+            color: #d4a373;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0); /* Fond transparent */
+        }
+        
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+        
+        .logo:hover {
+            color: #d4a373;
+        }
+        
+        /* Styles pour les messages d'erreur/succès */
+        .message {
+            display: none; /* Caché par défaut */
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background-color: #d4edda; /* Vert clair */
+            color: #155724; /* Vert foncé */
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da; /* Rouge clair */
+            color: #721c24; /* Rouge foncé */
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">Accueil</a>
+    </nav>
+
+    <section class="form-hero">
+        <div class="form-container">
+            <h2 class="form-title">Se connecter</h2>
+            
+            <div id="loginMessage" class="message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" required>
+                </div>
+                
+                <button type="submit" class="form-btn">Se connecter</button>
+            </form>
+            
+            <div class="signup-link">
+                Pas encore de compte? <a href="signup.html">Inscrivez-vous</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Empêche le rechargement de la page par défaut du formulaire
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginMessage = document.getElementById('loginMessage'); // Référence au paragraphe de message
+
+            // Réinitialiser les messages précédents
+            if (loginMessage) {
+                loginMessage.textContent = '';
+                loginMessage.style.display = 'none';
+                loginMessage.classList.remove('success', 'error');
+            }
+
+            try {
+                const response = await fetch('http://127.0.0.1:5001/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (loginMessage) {
+                        loginMessage.textContent = data.message || 'Email ou mot de passe incorrect';
+                        loginMessage.classList.add('error');
+                        loginMessage.style.display = 'block';
+                    }
+                    throw new Error(data.message || 'Email ou mot de passe incorrect');
+                }
+
+                // Si la connexion réussit
+                localStorage.setItem('token', data.token); // Stocke le token reçu du backend
+
+                // NOUVEAU : Décoder le token pour extraire les informations utilisateur, y compris le rôle
+                let userRole = null;
+                if (data.token) {
+                    try {
+                        // Les tokens JWT sont en trois parties: header.payload.signature
+                        // Le payload est la deuxième partie, encodée en Base64
+                        const base64Url = data.token.split('.')[1];
+                        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Remplacement pour un décodage Base64 valide
+                        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                        }).join(''));
+
+                        const decodedToken = JSON.parse(jsonPayload);
+                        // Le rôle est sous `user.role` dans le payload du token
+                        if (decodedToken && decodedToken.user && decodedToken.user.role) {
+                            userRole = decodedToken.user.role;
+                        } else {
+                            console.warn("Le rôle n'a pas pu être extrait du token.");
+                        }
+                    } catch (decodeError) {
+                        console.error("Erreur lors du décodage du token JWT :", decodeError);
+                    }
+                }
+
+                // NOUVEAU : Stocke le rôle dans localStorage pour une utilisation future si nécessaire
+                localStorage.setItem('userRole', userRole);
+
+                if (loginMessage) {
+                    loginMessage.textContent = data.message || 'Connexion réussie ! Redirection...';
+                    loginMessage.classList.add('success');
+                    loginMessage.style.display = 'block';
+                }
+
+                // Redirige l'utilisateur après un court délai en fonction de son rôle
+                setTimeout(() => {
+                    if (userRole === 'admin') {
+                        window.location.href = 'admin.html'; // Redirige vers la page d'administration
+                    } else if (userRole === 'client') {
+                        window.location.href = 'client-dashboard.html'; // Redirige vers la page client-dashboard.html
+                    } else {
+                        // Fallback si le rôle n'est pas clairement défini ou inconnu
+                        console.warn("Rôle utilisateur inconnu ou manquant. Redirection par défaut vers la page client.");
+                        window.location.href = 'client-dashboard.html'; // Redirige par défaut vers le tableau de bord client
+                    }
+                }, 1500); // Redirige après 1.5 secondes
+
+            } catch (err) {
+                // Gère les erreurs (réseau, erreur du serveur, etc.)
+                if (loginMessage) {
+                    loginMessage.textContent = err.message || 'Une erreur inattendue est survenue.';
+                    loginMessage.classList.add('error');
+                    loginMessage.style.display = 'block';
+                }
+                console.error('Erreur lors de la connexion :', err);
+            }
+        });
+    </script>
+</body>
+</html>

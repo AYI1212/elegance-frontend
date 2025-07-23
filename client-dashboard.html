@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue - Deen Coiffure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Styles de base pour rendre la page jolie */
+        :root {
+            --primary: #d4a373;
+            /* Une couleur dorée/bronze pour les éléments importants */
+            --secondary: #f8f5f2;
+            /* Un beige très clair pour certains fonds */
+            --dark: #333;
+            /* Un gris foncé pour le texte principal */
+            --light: #fff;
+            /* Blanc */
+            --text: #555;
+            /* Un gris moyen pour le texte secondaire */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            /* Une police d'écriture moderne */
+        }
+
+        body {
+            /* Nous allons utiliser une image de fond pour que ce soit plus joli */
+            background-image: url('photos/tresses.jpg');
+            /* Assurez-vous d'avoir cette image dans votre dossier 'photos' */
+            background-size: cover;
+            /* L'image couvrira toute la page */
+            background-position: center;
+            /* L'image sera centrée */
+            background-repeat: no-repeat;
+            /* L'image ne se répétera pas */
+            background-attachment: fixed;
+            /* L'image restera fixe quand vous faites défiler */
+            color: var(--text);
+            line-height: 1.7;
+            display: flex;
+            /* Pour organiser le contenu verticalement */
+            flex-direction: column;
+            min-height: 100vh;
+            /* La page prendra au moins toute la hauteur de l'écran */
+        }
+
+        /* Un voile sombre sur l'image de fond pour que le texte soit plus facile à lire */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            /* Un voile noir semi-transparent */
+            z-index: -1;
+            /* Place le voile derrière le contenu */
+        }
+
+        /* La barre de navigation en haut de la page */
+        nav {
+            width: 100%;
+            padding: 0.5rem;
+            /* Espacement interne */
+            display: flex;
+            /* Pour aligner les éléments sur une ligne */
+            justify-content: space-between;
+            /* Le logo à gauche, les liens à droite */
+            align-items: center;
+            /* Centrer verticalement */
+            z-index: 100;
+            /* Assure que la barre est au-dessus des autres éléments */
+            background-color: #202020;
+            /* Fond blanc semi-transparent */
+            backdrop-filter: blur(10px);
+            /* Effet de flou derrière la nav */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            /* Petite ombre */
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 15px;
+            color: white;
+            text-decoration: none;
+            /* Pas de soulignement */
+        }
+
+
+        nav ul {
+            list-style: none;
+            /* Enlève les puces de liste */
+            display: flex;
+            /* Pour aligner les éléments sur une ligne */
+            align-items: center;
+            /* Centrer verticalement */
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+            /* Espacement entre les éléments de la liste */
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            /* Animation douce au survol */
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: var(--primary);
+            /* Devient doré au survol ou si c'est la page active */
+        }
+
+        .welcome-text {
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-right: 1.5rem;
+            /* Espace entre le texte de bienvenue et le bouton de déconnexion */
+        }
+
+        /* Le contenu principal au centre de la page */
+        .dashboard-container {
+            flex-grow: 1;
+            /* Permet au conteneur de prendre l'espace restant au centre */
+            display: flex;
+            flex-direction: column;
+            /* Les éléments s'empilent verticalement */
+            justify-content: center;
+            /* Centrer le contenu verticalement */
+            align-items: center;
+            /* Centrer le contenu horizontalement */
+            padding: 4rem 2rem;
+            /* Espacement interne */
+            text-align: center;
+            color: var(--light);
+            /* Texte clair sur le fond sombre de l'image */
+            background-color: black;
+        }
+
+        .dashboard-container h1 {
+            font-size: 3.8rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            /* Légère ombre pour le texte */
+        }
+
+        .dashboard-container p {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            max-width: 800px;
+        }
+
+        .dashboard-buttons {
+            display: flex;
+            /* Pour aligner les boutons sur une ligne */
+            flex-wrap: wrap;
+            /* Les boutons iront à la ligne si l'écran est trop petit */
+            justify-content: center;
+            gap: 1.5rem;
+            /* Espacement entre les boutons */
+        }
+
+        .dashboard-btn {
+            display: inline-block;
+            /* Pour que le padding et la marge fonctionnent bien */
+            background-color: var(--primary);
+            /* Fond doré */
+            color: var(--light);
+            /* Texte blanc */
+            padding: 1rem 2.5rem;
+            border-radius: 5px;
+            /* Coins légèrement arrondis */
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            /* Animation au survol */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            /* Ombre pour donner du relief */
+        }
+
+        .dashboard-btn:hover {
+            background-color: #c08c5c;
+            /* Un peu plus sombre au survol */
+            transform: translateY(-3px);
+            /* Légère élévation au survol */
+        }
+
+        /* Le pied de page */
+        footer {
+            background-color: white;
+            /* Fond gris foncé */
+            color: black;
+            /* Texte blanc */
+            padding: 2rem 5%;
+            text-align: center;
+            margin-top: auto;
+            /* Pousse le pied de page vers le bas de la page */
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: black;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Styles pour les petits écrans (téléphones) */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                /* Les éléments de la nav s'empilent */
+                padding: 1rem 2%;
+            }
+
+            nav ul {
+                flex-direction: column;
+                /* Les éléments de la liste s'empilent */
+                align-items: flex-end;
+                /* Align the logout button to the right */
+                margin-top: 1rem;
+            }
+
+            nav ul li {
+                margin: 0.5rem 0;
+            }
+
+            .welcome-text {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .dashboard-container h1 {
+                font-size: 2.5rem;
+            }
+
+            .dashboard-container p {
+                font-size: 1.1rem;
+            }
+
+            .dashboard-buttons {
+                flex-direction: column;
+                /* Les boutons s'empilent aussi */
+            }
+
+            .dashboard-btn {
+                width: 80%;
+                /* Occupe plus de largeur sur mobile */
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="client-dashboard.html" class="logo">Deen Coiffure</a>
+        <ul>
+            <li><span id="welcomeMessage" class="welcome-text" style="color: white;">Bonjour !</span></li>
+            <li><a href="#" id="logoutBtn" class="dashboard-btn"
+                    style="padding: 0.5rem 1.5rem; font-size: 0.9rem; color: rgb(255, 255, 255);">Déconnexion</a></li>
+        </ul>
+    </nav>
+
+    <section class="dashboard-container">
+        <h1 id="userWelcome">Bonjour, Client !</h1>
+        <p>Bienvenue sur votre espace personnel Deen Coiffure. Gérez vos réservations et découvrez nos prestations.</p>
+
+        <div class="dashboard-buttons">
+            <a href="catalogue.html" class="dashboard-btn">Explorer les Prestations</a>
+            <a href="mes-reservations.html" class="dashboard-btn">Voir Mes Réservations</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <a href="client-dashboard.html" class="footer-logo">Deen Coiffure</a>
+        </div>
+    </footer>
+
+    <script>
+        // Ce code JavaScript s'exécute quand la page est entièrement chargée
+        document.addEventListener('DOMContentLoaded', function () {
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userWelcome = document.getElementById('userWelcome');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+
+            // --- PARTIE SIMPLIFIÉE POUR VOUS ÉPARGNER LES PRÉOCCUPATIONS DE BACKEND POUR L'INSTANT ---
+            // Pour l'instant, nous allons juste afficher un nom par défaut ou un nom que vous mettez dans le localStorage manuellement.
+            // Quand votre site sera "réel", cette partie sera gérée par la connexion.
+
+            // Essayons de récupérer le nom de l'utilisateur. Si ce n'est pas un vrai système de connexion,
+            // vous pouvez mettre un nom générique ici ou le stocker manuellement dans votre navigateur (voir plus bas).
+            let userName = "Cher Client"; // Nom par défaut
+
+            // Si vous avez un jour stocké un nom avec 'localStorage.setItem("userName", "VotreNom");'
+            // alors cette partie le récupérera.
+            const storedUserName = localStorage.getItem('userName');
+            if (storedUserName) {
+                userName = storedUserName;
+            }
+
+            // Mettre à jour les messages de bienvenue sur la page
+            userWelcome.textContent = `Bonjour, ${userName} !`;
+            welcomeMessage.textContent = `Bonjour, ${userName}`;
+
+            // --- FIN DE LA PARTIE SIMPLIFIÉE ---
+
+
+            // Quand on clique sur le bouton "Déconnexion"
+            logoutBtn.addEventListener('click', function (e) {
+                e.preventDefault(); // Empêche le lien de faire son action normale (recharger la page)
+
+                // Ici, nous faisons "comme si" nous nous déconnectons
+                // Nous effaçons toutes les informations "utilisateur" du navigateur
+                localStorage.removeItem('token'); // Si vous avez un token un jour
+                localStorage.removeItem('currentUser'); // Si vous avez des infos utilisateur plus détaillées
+                localStorage.removeItem('userName'); // Le nom que nous utilisons ici pour l'exemple
+
+                // Ensuite, nous redirigeons l'utilisateur vers la page de connexion
+                window.location.href = 'login.html'; // Assurez-vous que vous avez une page login.html
+            });
+        });
+    </script>
+</body>
+
+</html>

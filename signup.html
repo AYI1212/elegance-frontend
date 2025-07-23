@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - ÉLÉGANCE</title>
+    <style>
+        /* Vos styles CSS existants pour signup.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #ffffff;
+        }
+        
+        .form-hero {
+            height: 100vh;
+            background: url('photos/sbg.png') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+            position: relative;
+        }
+        
+        .form-hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.685);
+        }
+        
+        .form-container {
+            background: rgba(254, 254, 254, 0); /* Fond semi-transparent */
+            padding: 2.5rem;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+        }
+        
+        .form-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #d4a373; /* Couleur dorée */
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #ffffff;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4a373;
+            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.3);
+        }
+        
+        .form-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #d4a373;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .form-btn:hover {
+            background-color: #c0916a;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            color: #ffffff;
+        }
+        
+        .login-link a {
+            color: #d4a373;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0); /* Fond transparent */
+        }
+        
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+        
+        .logo:hover {
+            color: #d4a373;
+        }
+        
+        .about-link {
+            color: #333;
+            text-decoration: none;
+            font-size: 1.1rem;
+            align-self: center;
+        }
+
+        /* Styles pour les messages d'erreur/succès */
+        .message {
+            display: none; /* Caché par défaut */
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background-color: #d4edda; /* Vert clair */
+            color: #155724; /* Vert foncé */
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da; /* Rouge clair */
+            color: #721c24; /* Rouge foncé */
+            border: 1px solid #f5c6cb;
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class= "logo">Accueil</a>
+    </nav>
+
+    <section class="form-hero">
+        <div class="form-container">
+            <h2 class="form-title">Créer un compte</h2>
+            
+            <div id="signupMessage" class="message"></div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="name">Nom complet</label>
+                    <input type="text" id="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" required minlength="6">
+                </div>
+                
+                <button type="submit" class="form-btn">S'inscrire</button>
+            </form>
+            
+            <div class="login-link">
+                Déjà un compte? <a href="login.html">Connectez-vous</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Empêche le rechargement de la page par défaut du formulaire
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const signupMessage = document.getElementById('signupMessage'); // Référence au paragraphe de message
+
+        // Réinitialiser les messages précédents
+        if (signupMessage) {
+            signupMessage.textContent = '';
+            signupMessage.style.display = 'none';
+            signupMessage.classList.remove('success', 'error');
+        }
+        
+        try {
+            const response = await fetch('http://127.0.0.1:5001/api/users/register', { // GARDER LE PORT 5001
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Indique que nous envoyons du JSON
+                },
+                body: JSON.stringify({ name, email, password }) // Convertit les données en JSON
+            });
+            
+            const data = await response.json(); // Analyse la réponse JSON du serveur
+
+            if (!response.ok) { // Si la réponse n'est pas "OK" (statut 2xx), c'est une erreur
+                throw new Error(data.message || 'Erreur lors de l\'inscription');
+            }
+
+            // Si l'inscription réussit
+            localStorage.setItem('token', data.token); // Stocke le token reçu du backend
+            if (signupMessage) {
+                signupMessage.textContent = data.message || 'Inscription réussie ! Redirection...';
+                signupMessage.classList.add('success');
+                signupMessage.style.display = 'block';
+            }
+
+            // Redirige l'utilisateur après un court délai
+            setTimeout(() => {
+                window.location.href = 'catalogue.html'; // Redirige vers le catalogue après inscription
+            }, 1500); // Redirige après 1.5 secondes
+
+        } catch (err) {
+            // Gère les erreurs (réseau, erreur du serveur, etc.)
+            if (signupMessage) {
+                signupMessage.textContent = err.message;
+                signupMessage.classList.add('error');
+                signupMessage.style.display = 'block';
+            }
+        }
+    });
+</script>
+</body>
+</html>

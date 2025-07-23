@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue - ÉLÉGANCE</title>
+    <style>
+        /* Styles de base cohérents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        body {
+            background: url(photos/catbg.png);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Ajouté pour centrer verticalement les éléments de la nav */
+            z-index: 100;
+            background: rgba(255, 255, 255, 0);
+        }
+        
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+        
+        .logo:hover {
+            color: #d4a373;
+        }
+
+        /* Ajustement minimal pour les liens de navigation et le bouton */
+        .nav-links {
+            display: flex;
+            gap: 2rem; /* Garde l'écart original */
+            align-items: center; /* Assure l'alignement vertical */
+        }
+        
+        .nav-links .nav-link,
+        .nav-links .logout-button { /* Style pour le bouton de déconnexion pour qu'il ressemble aux liens */
+            color: #ffffff; /* Couleur du texte comme les liens */
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500; /* Légèrement moins gras que le logo */
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0; /* Pas de padding pour qu'il agisse comme un lien */
+        }
+        
+        .nav-links .nav-link:hover,
+        .nav-links .logout-button:hover {
+            color: #d4a373;
+        }
+        
+        /* Section Catalogue */
+        .catalogue {
+            background-color: rgba(0, 0, 0, 0.742);
+            padding: 8rem 2rem 4rem;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            font-weight: 400;
+            position: relative;
+            color: white;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: #333;
+            margin: 1rem auto;
+        }
+        
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .tab-btn.active {
+            color: #d4a373;
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #d4a373;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .service-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .service-info {
+            padding: 1.5rem;
+        }
+        
+        .service-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-price {
+            font-size: 1.1rem;
+            color: #d4a373;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .add-color {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .add-color input {
+            margin-right: 0.5rem;
+        }
+        
+        .select-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .select-btn:hover {
+            background: #555;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .catalogue {
+                padding: 6rem 1rem 2rem;
+            }
+            
+            .category-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="client-dashboard.html" class="logo">Accueil</a>
+        <div class="nav-links">
+            <a href="mes-reservations.html" class="nav-link" id="mesReservationsLink" style="display:none;">Mes Réservations</a>
+            <button id="logoutButton" class="logout-button" style="display:none;">Déconnexion</button>
+        </div>
+    </nav>
+    
+    <main class="catalogue">
+        <h2 class="section-title">Nos Prestations</h2>
+        
+        <div class="category-tabs">
+            <button class="tab-btn active" data-category="coupes">Coupes</button>
+            <button class="tab-btn" data-category="tresses">Tresses</button>
+        </div>
+        
+        <div class="services-grid" id="coupes">
+            <div class="service-card">
+                <img src="photos/coupe1.jpg" alt="Taper Fade" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Taper Fade</h3>
+                    <p class="service-price">5 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color1" class="color-checkbox">
+                        <label for="color1">+ Teinture (4 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Taper Fade" data-price="5000" data-colorprice="4000">
+                        Choisir cette coupe
+                    </button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="photos/coupe2.jpg" alt="Buzz Cut" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Buzz Cut</h3>
+                    <p class="service-price">5 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color2" class="color-checkbox">
+                        <label for="color2">+ Teinture (4 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Buz Cut" data-price="5000" data-colorprice="4000">
+                        Choisir cette coupe
+                    </button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="photos/coupe3.png" alt="Boule à Zero" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Boule à Zero</h3>
+                    <p class="service-price">5 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color3" class="color-checkbox">
+                        <label for="color3">+ Teinture (4 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Boule à Zero" data-price="5000" data-colorprice="4000">
+                        Choisir cette coupe
+                    </button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="photos/coupe4.png" alt="Mid Fade" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Mid Fade</h3>
+                    <p class="service-price">5 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color4" class="color-checkbox">
+                        <label for="color4">+ Teinture (4 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Mid Fade" data-price="5000" data-colorprice="4000">
+                        Choisir cette coupe
+                    </button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="photos/coupe5.png" alt="High Fade" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">High Fade</h3>
+                    <p class="service-price">5 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color5" class="color-checkbox">
+                        <label for="color5">+ Teinture (4 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="High Fade" data-price="5000" data-colorprice="4000">
+                        Choisir cette coupe
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="services-grid" id="tresses" style="display: none;">
+            <div class="service-card">
+                <img src="photos/tresse1.png" alt="tresses africaines" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Tresses Africaines</h3>
+                    <p class="service-price">10 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color6" class="color-checkbox">
+                        <label for="color6">+ Teinture (5 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Tresses Africaines" data-price="10000" data-colorprice="5000">
+                        Choisir cette tresse
+                    </button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="photos/tresse2.png" alt="tresseZIPZAG" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Box Braids</h3>
+                    <p class="service-price">10 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color7" class="color-checkbox">
+                        <label for="color7">+ Teinture (5 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Box Braids" data-price="10000" data-colorprice="5000">
+                        Choisir cette tresse
+                    </button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="photos/tresse3.png" alt="Tresses Cornrows" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Cornrows</h3>
+                    <p class="service-price">10 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color8" class="color-checkbox">
+                        <label for="color8">+ Teinture (5 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Tresses Cornrows" data-price="10000" data-colorprice="5000">
+                        Choisir cette tresse
+                    </button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <img src="photos/tresse4.jpg" alt="Locks" class="service-img">
+                <div class="service-info">
+                    <h3 class="service-name">Locks</h3>
+                    <p class="service-price">10 000 FCFA</p>
+                    <div class="add-color">
+                        <input type="checkbox" id="color9" class="color-checkbox">
+                        <label for="color9">+ Teinture (5 000 FCFA)</label>
+                    </div>
+                    <button class="select-btn" data-service="Locks" data-price="10000" data-colorprice="5000">
+                        Choisir cette tresse
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token'); // Tente de récupérer le token
+            const logoutButton = document.getElementById('logoutButton');
+            const mesReservationsLink = document.getElementById('mesReservationsLink');
+
+            // Si aucun token n'est trouvé, redirige vers la page de connexion
+            if (!token) {
+                window.location.href = 'login.html';
+                return; // Arrête l'exécution du script
+            } else {
+                // Si l'utilisateur est connecté, affiche le bouton de déconnexion et le lien Mes Réservations
+                logoutButton.style.display = 'inline-block'; // Utilisez inline-block pour maintenir l'alignement
+                mesReservationsLink.style.display = 'inline-block'; // Affichez le lien "Mes Réservations"
+            }
+
+            // Gestion de la déconnexion
+            logoutButton.addEventListener('click', function() {
+                localStorage.removeItem('token'); // Supprime le token
+                window.location.href = 'index.html'; // Redirige vers la page d'accueil
+            });
+
+            // --- Votre logique existante pour le catalogue (non modifiée) ---
+
+            // Gestion des onglets
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const serviceGrids = document.querySelectorAll('.services-grid');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Retirer la classe active de tous les boutons
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // Ajouter la classe active au bouton cliqué
+                    btn.classList.add('active');
+                    
+                    // Cacher toutes les grilles
+                    serviceGrids.forEach(grid => {
+                        grid.style.display = 'none';
+                    });
+                    
+                    // Afficher la grille correspondante
+                    const category = btn.dataset.category;
+                    document.getElementById(category).style.display = 'grid';
+                });
+            });
+            
+            // Gestion de la sélection de service
+            const selectBtns = document.querySelectorAll('.select-btn');
+            
+            selectBtns.forEach(btn => {
+                btn.addEventListener('click', async function() { // Ajout de 'async' ici
+                    const card = this.closest('.service-card');
+                    const serviceName = this.dataset.service;
+                    let price = parseInt(this.dataset.price);
+                    const colorPrice = parseInt(this.dataset.colorprice);
+                    const colorChecked = card.querySelector('.color-checkbox').checked;
+                    
+                    // Ajouter le prix de la teinture si cochée
+                    if (colorChecked) {
+                        price += colorPrice;
+                    }
+                    
+                    // Stocker la sélection pour la page de réservation
+                    const selection = {
+                        service: serviceName,
+                        price: price,
+                        hasColor: colorChecked
+                    };
+                    
+                    localStorage.setItem('serviceSelection', JSON.stringify(selection));
+                    
+                    // NOUVEAU : Vérifier le token juste avant la redirection (double vérification de sécurité)
+                    const currentToken = localStorage.getItem('token'); // Utilise le token le plus récent
+                    if (!currentToken) {
+                        alert('Votre session a expiré ou vous n\'êtes pas connecté. Veuillez vous reconnecter.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('http://127.0.0.1:5001/api/users/auth-test', { // Utilise la route de test d'authentification
+                            method: 'GET',
+                            headers: {
+                                'x-auth-token': currentToken // Utilise le token pour la vérification
+                            }
+                        });
+                        if (!response.ok) {
+                            throw new Error('Session invalide. Veuillez vous reconnecter.');
+                        }
+                        // Si la réponse est OK, le token est valide, on peut rediriger
+                        window.location.href = 'check-availability.html';
+
+                    } catch (error) {
+                        alert(error.message);
+                        localStorage.removeItem('token'); // Supprime le token invalide
+                        window.location.href = 'login.html';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

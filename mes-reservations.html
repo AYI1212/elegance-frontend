@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Réservations - ÉLÉGANCE</title>
+    <style>
+        /* Styles de base cohérents */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playfair Display', serif;
+        }
+
+        body {
+            background-image: url('photos/mesreservations.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #f8f5f2;
+            background-attachment: fixed;
+            color: #333;
+        }
+
+        /* Styles pour la barre de navigation (copiés de catalogue.html) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0); /* Transparent pour conserver le fond de page */
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d4a373;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #d4a373;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #e0b48e; /* Un peu plus clair au survol */
+        }
+
+        /* Styles spécifiques à la page Mes Réservations */
+        .reservations-container {
+            max-width: 900px;
+            margin: 8rem auto 2rem; /* Espace pour la nav fixe */
+            padding: 2rem;
+            background-color: rgba(0, 0, 0, 0); /* Fond semi-transparent pour la lisibilité */
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #d4a373;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        .reservations-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .reservation-item {
+            background-color: #322e28;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            border-left: 5px solid var(--pending-color); /* Couleur basée sur le statut */
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .reservation-item.status-pending { border-left-color: #f39c12; }
+        .reservation-item.status-confirmed { border-left-color: #2ecc71; }
+        .reservation-item.status-rejected { border-left-color: #e74c3c; }
+        .reservation-item.status-cancelled { border-left-color: #95a5a6; }
+        .reservation-item.status-completed { border-left-color: #1abc9c; } /* Nouvelle couleur pour 'completed' */
+
+
+        .reservation-item p {
+            margin: 0.2rem 0;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .reservation-item p strong {
+            color: #d4a373;
+        }
+
+        .reservation-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .reservation-actions button {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .rebook-btn {
+            background-color: #d4a373;
+            color: white;
+        }
+
+        .rebook-btn:hover {
+            background-color: #c2956c;
+        }
+
+        .no-reservations {
+            text-align: center;
+            color: #ffffff;
+            font-style: italic;
+            margin-top: 2rem;
+        }
+
+        .preuve-btn {
+            color: #ffffff;
+        }
+
+
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="client-dashboard.html" class="logo">Accueil</a>
+        <ul class="nav-links">
+            <li><a href="catalogue.html">Catalogue</a></li>
+            <li><a href="#" id="logout-btn">Déconnexion</a></li>
+        </ul>
+    </nav>
+
+    <main class="reservations-container">
+        <h2>Mes Réservations</h2>
+        <div id="reservations-list" class="reservations-list">
+            <p style="text-align:center; color: #d4a373;">Chargement de vos réservations...</p>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutButton = document.getElementById('logout-btn');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('token');
+                    alert('Déconnexion réussie !');
+                    window.location.href = 'login.html';
+                });
+            }
+
+            const reservationsList = document.getElementById('reservations-list');
+            const API_BASE_URL = 'http://localhost:5001/api';
+
+            async function fetchReservations() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    reservationsList.innerHTML = '<p style="text-align:center; color:white;">Veuillez vous connecter pour voir vos réservations.</p>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/reservations/user`, {
+                        headers: {
+                            'x-auth-token': token
+                        }
+                    });
+
+                    if (!response.ok) {
+                        let errorMessage = 'Impossible de charger les réservations.';
+                        try {
+                            const errorData = await response.json();
+                            errorMessage = errorData.message || errorMessage;
+                        } catch (e) {
+                            errorMessage = await response.text();
+                            console.error('Réponse non-JSON du serveur:', errorMessage);
+                            if (response.status === 401 || response.status === 403) {
+                                localStorage.removeItem('token');
+                                alert("Votre session a expiré ou n'est plus valide. Veuillez vous reconnecter.");
+                                setTimeout(() => {
+                                    window.location.href = 'login.html';
+                                }, 1000);
+                                return;
+                            }
+                        }
+                        reservationsList.innerHTML = `<p style="text-align:center; color:white;">Impossible de charger les réservations: ${errorMessage}</p>`;
+                        return;
+                    }
+
+                    let reservations = await response.json(); // Utiliser 'let' car nous allons trier
+
+                    // --- NOUVEAU : Tri des réservations comme dans l'admin ---
+                    reservations.sort((a, b) => {
+                        // 1. D'abord par statut (dans l'ordre spécifique)
+                        const statusOrder = {
+                            pending: 1,
+                            confirmed: 2,
+                            cancelled: 3,
+                            completed: 4,
+                            rejected: 5
+                        };
+
+                        if (statusOrder[a.status] !== statusOrder[b.status]) {
+                            return statusOrder[a.status] - statusOrder[b.status];
+                        }
+
+                        // 2. Ensuite par date (plus ancien en premier)
+                        const dateA = new Date(a.date);
+                        const dateB = new Date(b.date);
+                        if (dateA.getTime() !== dateB.getTime()) {
+                            return dateA.getTime() - dateB.getTime();
+                        }
+
+                        // 3. Enfin par heure si même date
+                        return a.time.localeCompare(b.time);
+                    });
+                    // --- FIN DU NOUVEAU ---
+
+                    if (reservations.length === 0) {
+                        reservationsList.innerHTML = '<p class="no-reservations">Vous n\'avez pas encore de réservations.</p>';
+                        return;
+                    }
+
+                    // Fonction pour traduire les statuts
+                    function translateStatus(status) {
+                        switch (status) {
+                            case 'pending':
+                                return 'En attente';
+                            case 'confirmed':
+                                return 'Confirmée';
+                            case 'completed':
+                                return 'Terminée';
+                            case 'cancelled':
+                                return 'Annulée par Moi';
+                            case 'rejected': // Si vous avez un statut "rejected"
+                                return 'Rejetée';
+                            default:
+                                return status; // Retourne le statut original si non trouvé
+                        }
+                    }
+
+                    reservationsList.innerHTML = ''; // Nettoyer le message de chargement
+
+                    reservations.forEach(booking => {
+                        const formattedDate = formatDate(booking.date);
+                        const itemClass = `reservation-item status-${booking.status}`;
+
+                        const rawPaymentProof = booking.paymentProof;
+                        let cleanedPaymentProof = rawPaymentProof;
+
+                        if (rawPaymentProof && typeof rawPaymentProof === 'string' && rawPaymentProof !== 'N/A') {
+                            if (rawPaymentProof.startsWith('uploads/')) {
+                                cleanedPaymentProof = rawPaymentProof.substring('uploads/'.length);
+                            } else if (rawPaymentProof.startsWith('/uploads/')) {
+                                cleanedPaymentProof = rawPaymentProof.substring('/uploads/'.length);
+                            }
+                        }
+
+                        const paymentProofLink = cleanedPaymentProof && cleanedPaymentProof !== 'N/A' ?
+                            `<p><strong>Preuve de Paiement:</strong> <a class="preuve-btn" href="http://localhost:5001/uploads/${cleanedPaymentProof}" target="_blank">Voir la preuve</a></p>` :
+                            '<p><strong>Preuve de Paiement:</strong> Non disponible</p>';
+
+                        reservationsList.innerHTML += `
+                            <div class="${itemClass}">
+                                <p><strong>Service:</strong> ${booking.serviceName}</p>
+                                <p><strong>Date:</strong> ${formattedDate}</p>
+                                <p><strong>Heure:</strong> ${booking.time}</p>
+                                <p><strong>Prix:</strong> ${booking.price.toLocaleString()} FCFA</p>
+                                <p><strong>Avec couleur:</strong> ${booking.hasColor ? 'Oui' : 'Non'}</p>
+                                <p><strong>Méthode de Paiement:</strong> ${booking.paymentMethod}</p>
+                                ${paymentProofLink}
+                                <p><strong>Statut:</strong> ${translateStatus(booking.status)}</p>
+                                <div class="reservation-actions">
+                                    ${booking.status === 'pending' || booking.status === 'confirmed' ?
+                                        `<button class="cancel-btn" data-id="${booking._id}">Annuler</button>` : ''}
+                                    ${booking.status === 'cancelled' || booking.status === 'rejected' ?
+                                        `<button class="rebook-btn" data-service='${JSON.stringify({ service: booking.serviceName, price: booking.price, hasColor: booking.hasColor })}'>Reprendre un rdv</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    document.querySelectorAll('.cancel-btn').forEach(button => {
+                        button.addEventListener('click', async function() {
+                            const reservationId = this.dataset.id;
+                            if (confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
+                                try {
+                                    const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'x-auth-token': token
+                                        }
+                                    });
+
+                                    if (!response.ok) {
+                                        const errorData = await response.json();
+                                        throw new Error(errorData.message || 'Erreur lors de l\'annulation de la réservation.');
+                                    }
+                                    alert('Réservation annulée avec succès !');
+                                    fetchReservations(); // Recharger les réservations
+                                } catch (error) {
+                                    console.error('Erreur d\'annulation:', error);
+                                    alert(error.message);
+                                }
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('.rebook-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const serviceData = JSON.parse(this.dataset.service);
+                            localStorage.setItem('serviceSelection', JSON.stringify(serviceData));
+                            window.location.href = 'check-availability.html';
+                        });
+                    });
+
+                } catch (error) {
+                    console.error('Erreur de récupération des réservations:', error);
+                    reservationsList.innerHTML = `<p style="text-align:center; color:white;">Impossible de charger les réservations: ${error.message}</p>`;
+                }
+            }
+
+            // Formater la date
+            function formatDate(dateString) {
+                const options = { weekday: 'long', day: 'numeric', month: 'long' };
+                return new Date(dateString).toLocaleDateString('fr-FR', options);
+            }
+
+            // Capitaliser la première lettre d'une chaîne (pour les statuts)
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            // Appel initial pour charger les réservations
+            fetchReservations();
+        });
+    </script>
+</body>
+</html>

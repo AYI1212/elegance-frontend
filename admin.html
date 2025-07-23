@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - ÉLÉGANCE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Vos styles CSS existants pour admin.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playfair Display', serif;
+        }
+
+        body {
+            background-color: #000000;
+            color: #333;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 6rem auto 2rem;
+            padding: 0 2rem;
+        }
+
+        .admin-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 400;
+            color: white;
+            /* Pour le titre admin */
+        }
+
+        .reservations-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #202020;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .reservations-table th,
+        .reservations-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .reservations-table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #000000;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .reservations-table tr {
+            color: #ffffff;
+        }
+
+        .reservations-table tr:hover {
+            background-color: #1b1818b4;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.3em 0.6em;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+            text-transform: capitalize;
+        }
+
+
+        .status-badge.cancelled {
+            background-color: #ffb300;
+            /* Orange */
+        }
+
+        .status-badge.pending {
+            background-color: #ffea02;
+            /* Orange */
+        }
+
+        .status-badge.confirmed {
+            background-color: #2ecc71;
+            /* Vert */
+        }
+
+        .status-badge.rejected {
+            background-color: #e74c3c;
+            /* Rouge */
+        }
+
+        .status-badge.completed {
+            background-color: #3498db;
+            /* Bleu */
+        }
+
+        /* Actions buttons */
+        .actions-cell {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .actions-cell button {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .actions-cell .delete-btn {
+    padding: 0.6rem !important;
+    width: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actions-cell .delete-btn i {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+        .actions-cell .view-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .actions-cell .view-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .actions-cell .confirm-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .actions-cell .confirm-btn:hover {
+            background-color: #218838;
+        }
+
+        .actions-cell .reject-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .actions-cell .reject-btn:hover {
+            background-color: #c82333;
+        }
+
+        .actions-cell .complete-btn {
+            background-color: #6f42c1;
+            /* Purple */
+            color: white;
+        }
+
+        .actions-cell .complete-btn:hover {
+            background-color: #5a2e9e;
+        }
+
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-detail-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .modal-detail-group:last-of-type {
+            border-bottom: none;
+        }
+
+        .modal-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .modal-value {
+            color: #333;
+        }
+
+        .proof-img-container {
+            text-align: center;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .proof-img-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .proof-img-container img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Image Proof Modal */
+        .image-proof-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            /* Plus élevé que le modal de détails */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-proof-modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .image-proof-close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        /* Nouveaux styles pour les filtres et boutons */
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            color: white;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: none;
+            background-color: white;
+            min-width: 150px;
+        }
+
+        .delete-btn {
+            background-color: #dc3545 !important;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333 !important;
+        }
+
+        .refresh-btn {
+            background-color: #17a2b8 !important;
+            color: white !important;
+            padding: 0.6rem 1rem !important;
+            margin-left: auto !important;
+        }
+
+        .refresh-btn:hover {
+            background-color: #138496 !important;
+        }
+
+        .image-proof-close:hover,
+        .image-proof-close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Navbar Styles */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: #202020;
+            /* Fond foncé pour la barre d'admin */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .logo:hover {
+            color: #d4a373;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: #d4a373;
+            left: 0;
+            bottom: -5px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: #d4a373;
+        }
+
+        .no-reservations {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="admin.html" class="logo">Admin Dashboard</a>
+        <div class="nav-links">
+            <a href="catalogue.html" class="nav-link">Catalogue</a>
+            <a href="#" id="logoutBtn" class="nav-link">Déconnexion</a>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1 class="admin-title">Gestion des Réservations</h1>
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label class="filter-label">Statut :</label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="all">Tous les statuts</option>
+                        <option value="pending">En attente</option>
+                        <option value="confirmed">Confirmées</option>
+                        <option value="cancelled">Annulées par client</option>
+                        <option value="completed">Terminées</option>
+                        <option value="rejected">Rejetées</option>
+                    </select>
+                </div>
+                <button id="refreshBtn" class="refresh-btn">Actualiser</button>
+            </div>
+        </div>
+
+        <table class="reservations-table">
+            <thead>
+                <tr>
+                    <th>ID Client</th>
+                    <th>Nom Complet</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="reservationsList">
+                <tr>
+                    <td colspan="4" class="no-reservations">Chargement des réservations...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeDetailModal">&times;</span>
+            <h2 class="modal-title">Détails de la Réservation</h2>
+            <div class="modal-detail-group">
+                <span class="modal-label">ID Réservation:</span>
+                <span class="modal-value" id="modalBookingId">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Client:</span>
+                <span class="modal-value" id="modalClientName">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Email Client:</span>
+                <span class="modal-value" id="modalClientEmail">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Service:</span>
+                <span class="modal-value" id="modalService">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Teinture:</span>
+                <span class="modal-value" id="modalhasColor">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Date:</span>
+                <span class="modal-value" id="modalDate">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Heure:</span>
+                <span class="modal-value" id="modalTime">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Prix:</span>
+                <span class="modal-value" id="modalPrice">- FCFA</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Méthode Paiement:</span>
+                <span class="modal-value" id="modalPaymentMethod">-</span>
+            </div>
+            <div class="modal-detail-group">
+                <span class="modal-label">Statut:</span>
+                <span class="modal-value" id="modalStatus">-</span>
+            </div>
+            <div class="proof-img-container">
+                <p>Preuve de Paiement:</p>
+                <img id="modalPaymentProof" src="" alt="Preuve de Paiement"
+                    style="max-width: 100%; height: auto; cursor: pointer;">
+            </div>
+        </div>
+    </div>
+
+    <div id="proofImageModal" class="image-proof-modal">
+        <span class="image-proof-close" id="closeProofImageModal">&times;</span>
+        <img class="image-proof-modal-content" id="fullProofImage">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Variables globales
+            let allReservations = [];
+            const token = localStorage.getItem('token');
+
+            // Éléments DOM
+            const logoutBtn = document.getElementById('logoutBtn');
+            const reservationsList = document.getElementById('reservationsList');
+            const detailModal = document.getElementById('detailModal');
+            const closeDetailModal = document.getElementById('closeDetailModal');
+            const proofImageModal = document.getElementById('proofImageModal');
+            const closeProofImageModal = document.getElementById('closeProofImageModal');
+            const fullProofImage = document.getElementById('fullProofImage');
+            const statusFilter = document.getElementById('statusFilter');
+            const refreshBtn = document.getElementById('refreshBtn');
+
+            // Initialisation
+            if (!token) {
+                showError('Vous n\'êtes pas autorisé. Veuillez vous connecter.');
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return;
+            }
+
+            // Écouteurs d'événements
+            logoutBtn.addEventListener('click', handleLogout);
+            closeDetailModal.onclick = () => detailModal.style.display = 'none';
+            closeProofImageModal.onclick = () => proofImageModal.style.display = 'none';
+            statusFilter.addEventListener('change', applyFilters);
+            refreshBtn.addEventListener('click', fetchReservations);
+
+            window.onclick = function (event) {
+                if (event.target == detailModal) detailModal.style.display = 'none';
+                if (event.target == proofImageModal) proofImageModal.style.display = 'none';
+            };
+
+            // Chargement initial
+            fetchReservations();
+
+            // Fonctions principales
+            function handleLogout(e) {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+
+            async function fetchReservations() {
+                try {
+                    reservationsList.innerHTML = '<tr><td colspan="4">Chargement en cours...</td></tr>';
+
+                    const response = await fetch('http://127.0.0.1:5001/api/reservations/admin?populateUser=true', {
+                        method: 'GET',
+                        headers: {
+                            'x-auth-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Erreur serveur');
+                    }
+
+                    allReservations = await response.json();
+                    applyFilters();
+
+                } catch (error) {
+                    showError(error.message);
+                    if (error.message.includes('authentifié')) {
+                        setTimeout(() => window.location.href = 'login.html', 2000);
+                    }
+                }
+            }
+
+            function applyFilters() {
+                const selectedStatus = statusFilter.value;
+                let filtered = selectedStatus === 'all'
+                    ? [...allReservations]
+                    : allReservations.filter(b => b.status === selectedStatus);
+
+                displayReservations(filtered);
+            }
+
+            function displayReservations(reservations) {
+                reservationsList.innerHTML = '';
+
+                if (reservations.length === 0) {
+                    reservationsList.innerHTML = '<tr><td colspan="4">Aucune réservation trouvée</td></tr>';
+                    return;
+                }
+
+                // Tri selon votre ordre préféré
+                // Dans la fonction displayReservations, modifiez la partie de tri comme ceci :
+                reservations.sort((a, b) => {
+                    const statusOrder = { pending: 1, confirmed: 2, cancelled: 3, completed: 4, rejected: 5 };
+
+                    // Si les statuts sont différents, on trie selon l'ordre défini
+                    if (statusOrder[a.status] !== statusOrder[b.status]) {
+                        return statusOrder[a.status] - statusOrder[b.status];
+                    }
+
+                    // Si les statuts sont identiques, on trie par date (plus ancien en premier)
+                    return new Date(a.date) - new Date(b.date);
+                });
+
+                // Création des lignes du tableau
+                reservations.forEach(booking => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+        <td>${booking.userId?._id || 'N/A'}</td>
+        <td>${booking.userId?.name || 'N/A'}</td>
+        <td><span class="status-badge ${booking.status}">${translateStatus(booking.status)}</span></td>
+        <td class="actions-cell">
+            <button class="view-btn" data-id="${booking._id}">Voir</button>
+            ${booking.status === 'pending' ? `
+                <button class="confirm-btn" data-id="${booking._id}">Confirmer</button>
+                <button class="reject-btn" data-id="${booking._id}">Rejeter</button>
+            ` : ''}
+            ${booking.status === 'confirmed' ? `
+                <button class="complete-btn" data-id="${booking._id}">Terminer</button>
+            ` : ''}
+            
+        </td>
+    `;
+                    reservationsList.appendChild(row);
+                });
+
+                // Gestion des événements
+                setupEventHandlers();
+            }
+
+            function setupEventHandlers() {
+                // Voir les détails
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const booking = allReservations.find(b => b._id === this.dataset.id);
+                        if (booking) showDetailsModal(booking);
+                    });
+                });
+
+                // Gestion des actions
+                reservationsList.addEventListener('click', async (e) => {
+                    const id = e.target.dataset.id;
+
+                    if (e.target.classList.contains('confirm-btn')) {
+                        await updateBookingStatus(id, 'confirmed');
+                    } else if (e.target.classList.contains('reject-btn')) {
+                        await updateBookingStatus(id, 'rejected');
+                    } else if (e.target.classList.contains('complete-btn')) {
+                        await updateBookingStatus(id, 'completed');
+                    } 
+                });
+            }
+
+            async function updateBookingStatus(id, status) {
+                try {
+                    const response = await fetch(`http://127.0.0.1:5001/api/reservations/${id}/status`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': token
+                        },
+                        body: JSON.stringify({ status })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Échec de la mise à jour');
+                    }
+
+                    alert('Statut mis à jour !');
+                    fetchReservations();
+
+                } catch (error) {
+                    showError(error.message);
+                }
+            }
+
+            async function deleteReservation(id) {
+                try {
+                    const response = await fetch(`http://127.0.0.1:5001/api/reservations/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'x-auth-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Échec de la suppression');
+                    }
+
+                    alert('Réservation supprimée');
+                    fetchReservations();
+
+                } catch (error) {
+                    showError(error.message);
+                }
+            }
+
+            function showDetailsModal(booking) {
+                // Remplissage des détails (votre code existant)
+                document.getElementById('modalBookingId').textContent = booking._id;
+                document.getElementById('modalClientName').textContent = booking.userId?.name || 'N/A';
+                document.getElementById('modalClientEmail').textContent = booking.userId?.email || 'N/A';
+                document.getElementById('modalService').textContent = booking.serviceName;
+                document.getElementById('modalhasColor').textContent = booking.hasColor ? 'Oui' : 'Non';
+                document.getElementById('modalDate').textContent = formatDate(booking.date);
+                document.getElementById('modalTime').textContent = booking.time;
+                document.getElementById('modalPrice').textContent = `${booking.price?.toLocaleString() || '0'} FCFA`;
+                document.getElementById('modalPaymentMethod').textContent = booking.paymentMethod;
+                document.getElementById('modalStatus').innerHTML = `<span class="status-badge ${booking.status}">${translateStatus(booking.status)}</span>`;
+
+                const paymentProofImg = document.getElementById('modalPaymentProof');
+                if (booking.paymentProof && booking.paymentProof !== 'N/A') {
+                    paymentProofImg.src = `http://127.0.0.1:5001/uploads/${booking.paymentProof}`;
+                    paymentProofImg.style.display = 'block';
+                    paymentProofImg.onclick = () => {
+                        fullProofImage.src = `http://127.0.0.1:5001/uploads/${booking.paymentProof}`;
+                        proofImageModal.style.display = 'flex';
+                    };
+                } else {
+                    paymentProofImg.src = '';
+                    paymentProofImg.style.display = 'none';
+                }
+
+                detailModal.style.display = 'flex';
+            }
+
+            // Fonctions utilitaires
+            function translateStatus(status) {
+                const statusMap = {
+                    'pending': 'En attente',
+                    'confirmed': 'Confirmée',
+                    'completed': 'Terminée',
+                    'cancelled': 'Annulée par Client',
+                    'rejected': 'Rejetée'
+                };
+                return statusMap[status] || status;
+            }
+
+            function formatDate(dateString) {
+                const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                return new Date(dateString).toLocaleDateString('fr-FR', options);
+            }
+
+            function showError(message) {
+                reservationsList.innerHTML = `<tr><td colspan="4" class="no-reservations">${message}</td></tr>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

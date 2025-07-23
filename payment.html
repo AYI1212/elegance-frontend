@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - ÉLÉGANCE</title>
+    <style>
+        :root {
+            --primary-color: #d4a373;
+            --secondary-color: #333;
+            --light-bg: #f8f5f2;
+            --white: #ffffff;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --pending-color: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        body {
+            background-color: rgba(0, 0, 0, 0.548);
+            background: url('photos/paeiment.jpg') no-repeat center center/cover;
+            background-attachment: fixed;
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0);
+            transition: all 0.3s ease;
+        }
+        
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .logo:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Conteneur principal */
+        .payment-container {
+            max-width: 800px;
+            margin: 8rem auto 3rem;
+            padding: 0 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* En-tête */
+        .payment-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .payment-title {
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: white;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .payment-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .payment-subtitle {
+            color: #ebddc5;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Carte de paiement */
+        .payment-card {
+            background: rgba(245, 222, 179, 0);
+            padding: 3rem;
+            border-radius: 8px;
+            margin-bottom: 3rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .payment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+        
+        /* Récapitulatif */
+        .summary-section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .summary-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: rgb(255, 255, 255);
+            font-weight: 500;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            color: #ebddc5;
+            font-weight: 500;
+        }
+        
+        .summary-value {
+            font-weight: 500;
+            color: white;
+        }
+        
+        .total-price {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: 1.5rem;
+            text-align: right;
+        }
+        
+        /* Méthodes de paiement */
+        .payment-methods {
+            margin-bottom: 3rem;
+        }
+        
+        .methods-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .method-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .method-option {
+            border: 2px solid #eee;
+            padding: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .method-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 0;
+            background: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .method-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .method-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(212, 163, 115, 0.05);
+        }
+        
+        .method-option.selected::before {
+            height: 100%;
+        }
+        
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 1.5rem;
+            object-fit: contain;
+        }
+        
+        .method-info h4 {
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            color: #d4a373;
+        }
+        
+        .method-info p {
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+        
+        /* Upload de preuve */
+        .proof-section {
+            margin-bottom: 2rem;
+        }
+        
+        .proof-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .upload-container {
+            border: 2px dashed #ddd;
+            padding: 2.5rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-container:hover {
+            border-color: var(--primary-color);
+            background: rgba(212, 163, 115, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-container:hover .upload-icon {
+            transform: scale(1.1);
+        }
+        
+        .upload-text {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .upload-hint {
+            color: #f39c12;
+            font-size: 0.9rem;
+        }
+        
+        .preview-container {
+            margin-top: 1.5rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .file-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        /* Bouton de soumission */
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: #f39c12;
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            background: #d4a373;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: black;
+        }
+        
+        .submit-btn:disabled {
+            background: #d4a373;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Message d'erreur */
+        .error-message {
+            color: var(--error-color);
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .payment-container {
+                margin-top: 6rem;
+                padding: 0 1rem;
+            }
+            
+            .payment-card {
+                padding: 2rem;
+            }
+            
+            .method-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <a href="check-availability.html" class="logo">Retour</a>
+    </nav>
+    
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1 class="payment-title">Finaliser votre réservation</h1>
+            <p class="payment-subtitle">Veuillez sélectionner votre méthode de paiement et télécharger la preuve de transfert</p>
+        </div>
+        
+        <div class="payment-card">
+            <div class="summary-section">
+                <h2 class="summary-title">Votre réservation</h2>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Service:</span>
+                    <span class="summary-value" id="serviceName">-</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Date:</span>
+                    <span class="summary-value" id="appointmentDate">-</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Heure:</span>
+                    <span class="summary-value" id="appointmentTime">-</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Prix:</span>
+                    <span class="summary-value" id="totalPrice">- FCFA</span>
+                </div>
+            </div>
+            <div class="payment-methods">
+                <h2 class="methods-title">Méthode de paiement</h2>
+                
+                <div class="method-options">
+                    <div class="method-option" data-method="mtn">
+                        <img src="photos/mtnlogo.jpg" alt="MTN Mobile Money" class="method-icon">
+                        <div class="method-info">
+                            <h4>MTN Mobile Money</h4>
+                            <p>+229 01 91 12 68 92</p>
+                        </div>
+                    </div>
+                    
+                    <div class="method-option" data-method="moov">
+                        <img src="photos/moovlogo.png" alt="Moov Money" class="method-icon">
+                        <div class="method-info">
+                            <h4>Moov Money</h4>
+                            <p>+229 01 23 45 67 89</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="proof-section">
+                <h2 class="proof-title">Preuve de transfert</h2>
+                
+                <div class="upload-container" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p class="upload-text">Cliquez pour télécharger la capture</p> 
+                    <p class="upload-hint">Formats acceptés: JPG, PNG (max. 5MB)</p>
+                    <input type="file" id="paymentProof" accept="image/*">
+                </div>
+                
+                <div class="preview-container" id="previewContainer">
+                    <img id="previewImage" class="preview-image" alt="Aperçu de la capture">
+                    <p class="file-info" id="fileInfo"></p>
+                </div>
+            </div>
+            
+            <button class="submit-btn" id="submitBtn" disabled>Envoyer la preuve</button>
+            <p class="error-message" id="errorMessage">Veuillez sélectionner une méthode de paiement et télécharger la preuve</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupérer les informations de réservation temporaires
+            const tempBookingDetails = JSON.parse(localStorage.getItem('tempBookingDetails'));
+            
+            if (!tempBookingDetails) {
+                // Si aucune info de réservation temporaire, rediriger vers la page de sélection
+                window.location.href = 'confirmation.html'; 
+                return;
+            }
+            
+            // Afficher les informations de réservation
+            document.getElementById('serviceName').textContent = tempBookingDetails.serviceName;
+            document.getElementById('appointmentDate').textContent = formatDate(tempBookingDetails.date);
+            document.getElementById('appointmentTime').textContent = tempBookingDetails.time;
+            document.getElementById('totalPrice').textContent = tempBookingDetails.price.toLocaleString() + ' FCFA';
+            
+            // Gestion de la sélection du paiement
+            const methodOptions = document.querySelectorAll('.method-option');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            let selectedMethod = null;
+            let proofFile = null;
+            
+            methodOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    methodOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedMethod = this.dataset.method;
+                    checkFormCompletion();
+                });
+            });
+            
+            // Gestion de l'upload
+            const uploadArea = document.getElementById('uploadArea');
+            const paymentProof = document.getElementById('paymentProof');
+            const previewContainer = document.getElementById('previewContainer');
+            const previewImage = document.getElementById('previewImage');
+            const fileInfo = document.getElementById('fileInfo');
+            
+            uploadArea.addEventListener('click', function() {
+                paymentProof.click();
+            });
+            
+            paymentProof.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    proofFile = e.target.files[0];
+                    
+                    // Vérifier la taille du fichier
+                    if (proofFile.size > 5 * 1024 * 1024) { // 5MB
+                        showError('Le fichier est trop volumineux (max. 5MB)');
+                        proofFile = null; // Réinitialiser le fichier si trop grand
+                        previewContainer.style.display = 'none'; // Cacher l'aperçu
+                        fileInfo.textContent = ''; // Vider l'info du fichier
+                        checkFormCompletion(); // Vérifier de nouveau
+                        return;
+                    }
+                    
+                    // Afficher l'aperçu
+                    if (proofFile.type.match('image.*')) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            previewImage.src = event.target.result;
+                            previewContainer.style.display = 'block';
+                            fileInfo.textContent = proofFile.name;
+                            checkFormCompletion();
+                        };
+                        reader.readAsDataURL(proofFile);
+                    } else {
+                        // Si ce n'est pas une image, effacer l'aperçu
+                        previewContainer.style.display = 'none';
+                        fileInfo.textContent = 'Fichier sélectionné: ' + proofFile.name;
+                        checkFormCompletion();
+                    }
+                } else {
+                    proofFile = null; // Aucun fichier sélectionné
+                    previewContainer.style.display = 'none';
+                    fileInfo.textContent = '';
+                    checkFormCompletion();
+                }
+            });
+            
+            // Vérifier si le formulaire est complet
+            function checkFormCompletion() {
+                if (selectedMethod && proofFile) {
+                    submitBtn.disabled = false;
+                    errorMessage.style.display = 'none';
+                } else {
+                    submitBtn.disabled = true;
+                }
+            }
+            
+            // Gestion de la soumission
+            submitBtn.addEventListener('click', async function() {
+                if (!selectedMethod || !proofFile) {
+                    showError('Veuillez sélectionner une méthode de paiement et télécharger la preuve.');
+                    return;
+                }
+
+                // Récupérer les informations de réservation temporaires
+                const tempBookingDetails = JSON.parse(localStorage.getItem('tempBookingDetails'));
+
+                if (!tempBookingDetails) {
+                    showError('Aucun détail de réservation trouvé. Veuillez recommencer la sélection.');
+                    setTimeout(() => {
+                        window.location.href = 'check-availability.html';
+                    }, 1500);
+                    return;
+                }
+                
+                const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    showError('Vous devez être connecté pour finaliser la réservation.');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('serviceName', tempBookingDetails.serviceName); // MODIFIÉ ICI: 'service' devient 'serviceName'
+                formData.append('hasColor', tempBookingDetails.hasColor);
+                formData.append('date', tempBookingDetails.date);
+                formData.append('time', tempBookingDetails.time);
+                formData.append('price', tempBookingDetails.price);
+                formData.append('clientName', currentUser.name || 'Invité');
+                formData.append('clientEmail', currentUser.email || 'non-fourni@example.com');
+                formData.append('paymentMethod', selectedMethod);
+                formData.append('paymentProof', proofFile); // L'objet File lui-même
+
+                try {
+                    const response = await fetch('http://127.0.0.1:5001/api/reservations', {
+                        method: 'POST',
+                        headers: {
+                            'x-auth-token': token
+                        },
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // Stocker les détails de la réservation finale (y compris l'ID généré par le backend)
+                        localStorage.setItem('lastBooking', JSON.stringify(result.booking));
+                        // Nettoyer les détails de réservation temporaires après succès
+                        localStorage.removeItem('tempBookingDetails'); 
+
+                        // Rediriger directement vers la page de confirmation
+                        window.location.href = 'confirmation.html';
+                    } else {
+                        // Afficher l'erreur retournée par le backend
+                        showError(result.message || 'Erreur lors de la création de la réservation.');
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la soumission de la réservation :', error);
+                    showError('Erreur de connexion au serveur ou problème de réseau.');
+                }
+            });
+            
+            // Afficher une erreur
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Formater la date
+            function formatDate(dateString) {
+                const options = { weekday: 'long', day: 'numeric', month: 'long' };
+                return new Date(dateString).toLocaleDateString('fr-FR', options);
+            }
+        });
+    </script>
+</body>
+</html>
