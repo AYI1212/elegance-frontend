@@ -191,7 +191,7 @@
             }
 
             const reservationsList = document.getElementById('reservations-list');
-            const API_BASE_URL = 'http://localhost:5001/api';
+            const API_BASE_URL = 'https://PLACEHOLDER-POUR-URL-BACKEND-RENDER.onrender.com/api';
 
             async function fetchReservations() {
                 const token = localStorage.getItem('token');
@@ -298,7 +298,7 @@
                         }
 
                         const paymentProofLink = cleanedPaymentProof && cleanedPaymentProof !== 'N/A' ?
-                            `<p><strong>Preuve de Paiement:</strong> <a class="preuve-btn" href="http://localhost:5001/uploads/${cleanedPaymentProof}" target="_blank">Voir la preuve</a></p>` :
+                            `<p><strong>Preuve de Paiement:</strong> <a class="preuve-btn" href="https://PLACEHOLDER-POUR-URL-BACKEND-RENDER.onrender.com/uploads/${cleanedPaymentProof}" target="_blank">Voir la preuve</a></p>` :
                             '<p><strong>Preuve de Paiement:</strong> Non disponible</p>';
 
                         reservationsList.innerHTML += `
